@@ -2,19 +2,32 @@
 
   <PropertyGroup>
     <RootNamespace>Chromis</RootNamespace>
-    <TargetFramework>net8.0</TargetFramework>
+	<TargetFrameworks>net472;net8.0</TargetFrameworks>
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
     <Title>Chromis</Title>
 	<Authors>xionglongztz</Authors>
-	<Version>1.0.0</Version>
+	<Version>1.0.1</Version>
 	<Description>Extract dominant colors from images using K-Means, Median Cut, or Octree algorithms.</Description>
 	<PackageTags>image processing; color extraction; k-means; median cut; octree</PackageTags>
     <ApplicationManifest>My Project\app.manifest</ApplicationManifest>
-    <PackageLicenseFile>LICENSE.txt</PackageLicenseFile>
+    <RepositoryUrl>https://github.com/xionglongztz/Chromis</RepositoryUrl>
+    <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <PackageIcon>ChromisLogo.png</PackageIcon>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="SixLabors.ImageSharp" Version="3.1.12" />
+	  <!-- 其余公共包 -->
+  </ItemGroup>
+
+  <!-- 为 .NET Framework 4.7.2 指定低版本 ImageSharp -->
+  <ItemGroup Condition="'$(TargetFramework)' == 'net472'">
+	  <PackageReference Include="SixLabors.ImageSharp" Version="2.1.13" />
+  </ItemGroup>
+
+  <!-- 为 .NET 8.0 指定高版本 ImageSharp -->
+  <ItemGroup Condition="'$(TargetFramework)' == 'net8.0'">
+	  <PackageReference Include="SixLabors.ImageSharp" Version="3.1.12" />
   </ItemGroup>
 
   <ItemGroup>
@@ -34,10 +47,23 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Update="ChromisLogo.png">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
     <None Update="LICENSE.txt">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
+    <None Update="README.md">
       <Pack>True</Pack>
       <PackagePath>\</PackagePath>
     </None>
   </ItemGroup>
 
+
+  <ItemGroup>
+	  <None Include="ChromisLogo.png" Pack="true" PackagePath="\" />
+	  <None Include="README.md" Pack="true" PackagePath="\" />
+  </ItemGroup>
 </Project>
