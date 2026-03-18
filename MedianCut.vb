@@ -13,8 +13,6 @@
 ' See the License for the specific language governing permissions and
 ' limitations under the License.
 Imports Chromis.GlobalFcn
-Imports SixLabors.ImageSharp
-Imports SixLabors.ImageSharp.PixelFormats
 
 Public Class MedianCut
     Implements IColorExtractor
@@ -24,11 +22,10 @@ Public Class MedianCut
     ''' <summary>
     ''' 中位切分算法
     ''' </summary>
-    ''' <param name="image">要被处理的图像</param>
+    ''' <param name="pixels">要被处理的像素点</param>
     ''' <param name="colorCount">颜色点数</param>
     ''' <returns>包含具体颜色和比值的结构体</returns>
-    Public Function Extract(image As Image, colorCount As Integer) As IReadOnlyList(Of ColorInfo) Implements IColorExtractor.Extract
-        Dim pixels = GetPixelsFromImage(image)
+    Public Function Extract(pixels As List(Of RGBColor), colorCount As Integer) As IReadOnlyList(Of ColorInfo) Implements IColorExtractor.Extract
         Dim colorCubes As New List(Of ColorCube) From {New ColorCube(pixels)}
         '切分直到得到足够的颜色块
         While colorCubes.Count < colorCount
@@ -44,9 +41,7 @@ Public Class MedianCut
         Dim result = New List(Of ColorInfo)()
         For Each cube In colorCubes
             result.Add(New ColorInfo With {
-                .R = cube.AverageColor.R,
-                .G = cube.AverageColor.G,
-                .B = cube.AverageColor.B,
+                .Color = cube.AverageColor,
                 .Ratio = cube.Pixels.Count / totalPixels
             })
         Next
@@ -57,7 +52,7 @@ Public Class MedianCut
     ''' 颜色立方类
     ''' </summary>
     Private Class ColorCube
-        Public Pixels As List(Of Rgba64)
+        Public Pixels As List(Of RGBColor)
         Public RedRange As Tuple(Of Integer, Integer)
         Public GreenRange As Tuple(Of Integer, Integer)
         Public BlueRange As Tuple(Of Integer, Integer)
@@ -68,7 +63,7 @@ Public Class MedianCut
                        (BlueRange.Item2 - BlueRange.Item1)
             End Get
         End Property
-        Public ReadOnly Property AverageColor As Rgba64 '取平均颜色
+        Public ReadOnly Property AverageColor As RGBColor '取平均颜色
             Get
                 Dim r = 0, g = 0, b = 0
                 For Each pixel In Pixels
@@ -79,10 +74,10 @@ Public Class MedianCut
                 r \= Pixels.Count
                 g \= Pixels.Count
                 b \= Pixels.Count
-                Return Color.FromRgb(r, g, b)
+                Return RGBColor.FromRGB(r, g, b)
             End Get
         End Property
-        Public Sub New(pixels As List(Of Rgba64))
+        Public Sub New(pixels As List(Of RGBColor))
             Me.Pixels = pixels
             CalculateRanges()
         End Sub

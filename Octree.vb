@@ -13,9 +13,6 @@
 ' See the License for the specific language governing permissions and
 ' limitations under the License.
 Imports Chromis.GlobalFcn
-Imports SixLabors
-Imports SixLabors.ImageSharp
-Imports SixLabors.ImageSharp.PixelFormats
 
 Public Class Octree
     Implements IColorExtractor
@@ -25,11 +22,10 @@ Public Class Octree
     ''' <summary>
     ''' 八叉树算法
     ''' </summary>
-    ''' <param name="image">要被处理的图像</param>
+    ''' <param name="pixels">要被处理的像素点</param>
     ''' <param name="colorCount">颜色点数</param>
     ''' <returns>包含具体颜色和比值的结构体</returns>
-    Public Function Extract(image As Image, colorCount As Integer) As IReadOnlyList(Of ColorInfo) Implements IColorExtractor.Extract
-        Dim pixels = GetPixelsFromImage(image)
+    Public Function Extract(pixels As List(Of RGBColor), colorCount As Integer) As IReadOnlyList(Of ColorInfo) Implements IColorExtractor.Extract
         Dim octree = New Octree()
         '构建八叉树
         For Each pixel In pixels
@@ -45,9 +41,7 @@ Public Class Octree
         Dim result = New List(Of ColorInfo)()
         For Each node In colorNodes
             result.Add(New ColorInfo With {
-                .R = node.Color.R,
-                .G = node.Color.G,
-                .B = node.Color.B,
+                .Color = node.Color,
                 .Ratio = node.PixelCount / totalPixels
             })
         Next
@@ -65,9 +59,9 @@ Public Class Octree
         Public Children As OctreeNode() = New OctreeNode(7) {}
         Public IsLeaf As Boolean = False
         Public NextReducible As OctreeNode
-        Public ReadOnly Property Color As Rgba64
+        Public ReadOnly Property Color As RGBColor
             Get
-                Return ImageSharp.Color.FromRgb(Red \ PixelCount, Green \ PixelCount, Blue \ PixelCount)
+                Return RGBColor.FromRGB(Red \ PixelCount, Green \ PixelCount, Blue \ PixelCount)
             End Get
         End Property
     End Class
@@ -87,10 +81,10 @@ Public Class Octree
                 Return _leafCount
             End Get
         End Property
-        Public Sub AddColor(color As Rgba64)
+        Public Sub AddColor(color As RGBColor)
             AddColor(Root, color, 0)
         End Sub
-        Private Sub AddColor(node As OctreeNode, color As Rgba64, level As Integer)
+        Private Sub AddColor(node As OctreeNode, color As RGBColor, level As Integer)
             If node.IsLeaf Then
                 node.PixelCount += 1
                 node.Red += color.R
@@ -165,7 +159,7 @@ Public Class Octree
                 Next
             End If
         End Sub
-        Private Function GetColorIndex(color As Rgba64, level As Integer) As Integer
+        Private Function GetColorIndex(color As RGBColor, level As Integer) As Integer
             Dim shift = 7 - level '修正位偏移逻辑
             Dim rBit = (color.R >> shift) And 1
             Dim gBit = (color.G >> shift) And 1

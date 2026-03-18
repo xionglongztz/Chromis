@@ -13,8 +13,6 @@
 ' See the License for the specific language governing permissions and
 ' limitations under the License.
 Imports Chromis.GlobalFcn
-Imports SixLabors.ImageSharp
-Imports SixLabors.ImageSharp.PixelFormats
 
 Public Class KMeans
     Implements IColorExtractor
@@ -24,11 +22,10 @@ Public Class KMeans
     ''' <summary>
     ''' K-Means 聚类算法
     ''' </summary>
-    ''' <param name="image">要被处理的图像</param>
+    ''' <param name="pixels">要被处理的像素点</param>
     ''' <param name="clusterCount">聚类点数量</param>
     ''' <returns>包含具体颜色和比值的结构体</returns>
-    Public Function Extract(image As Image, clusterCount As Integer) As IReadOnlyList(Of ColorInfo) Implements IColorExtractor.Extract
-        Dim pixels = GetPixelsFromImage(image)
+    Public Function Extract(pixels As List(Of RGBColor), clusterCount As Integer) As IReadOnlyList(Of ColorInfo) Implements IColorExtractor.Extract
         Dim clusters = New List(Of Cluster)(clusterCount)
         '初始化随机中心点
         Dim rnd As New Random()
@@ -77,9 +74,7 @@ Public Class KMeans
         For Each cluster In clusters
             If cluster.Points.Count > 0 Then
                 result.Add(New ColorInfo With {
-                    .R = cluster.Center.R,
-                    .G = cluster.Center.G,
-                    .B = cluster.Center.B,
+                    .Color = cluster.Center,
                     .Ratio = cluster.Points.Count / totalPixels
                 })
             End If
@@ -91,9 +86,9 @@ Public Class KMeans
     ''' 聚类点类
     ''' </summary>
     Private Class Cluster
-        Public Center As Rgba64
-        Public Points As New List(Of Rgba64)
-        Public Sub New(center As Rgba64)
+        Public Center As RGBColor
+        Public Points As New List(Of RGBColor)
+        Public Sub New(center As RGBColor)
             Me.Center = center
         End Sub
     End Class
@@ -103,7 +98,7 @@ Public Class KMeans
     ''' </summary>
     ''' <param name="colors">颜色列表</param>
     ''' <returns>平均颜色</returns>
-    Private Shared Function CalculateAverageColor(colors As List(Of Rgba64)) As Rgba64
+    Private Shared Function CalculateAverageColor(colors As List(Of RGBColor)) As RGBColor
         Dim r = 0, g = 0, b = 0
         For Each color In colors
             r += color.R
@@ -113,7 +108,7 @@ Public Class KMeans
         r \= colors.Count
         g \= colors.Count
         b \= colors.Count
-        Return Color.FromRgb(r, g, b)
+        Return RGBColor.FromRGB(r, g, b)
     End Function
 
     ''' <summary>
@@ -122,7 +117,7 @@ Public Class KMeans
     ''' <param name="AColor">颜色A</param>
     ''' <param name="BColor">颜色B</param>
     ''' <returns>两个颜色的欧几里得距离</returns>
-    Private Shared Function CalcEuclideanDis(AColor As Rgba64, BColor As Rgba64) As Integer
+    Private Shared Function CalcEuclideanDis(AColor As RGBColor, BColor As RGBColor) As Integer
         Dim deltaR As Double = CDbl(AColor.R) - CDbl(BColor.R)
         Dim deltaG As Double = CDbl(AColor.G) - CDbl(BColor.G)
         Dim deltaB As Double = CDbl(AColor.B) - CDbl(BColor.B)
