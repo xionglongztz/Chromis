@@ -1,15 +1,33 @@
-﻿Imports Chromis.GlobalFcn
+﻿' Chromis - Image Dominant Colors Extracter
+' Copyright 2026 xionglongztz
+'
+' Licensed under the Apache License, Version 2.0 (the "License");
+' you may not use this file except in compliance with the License.
+' You may obtain a copy of the License at
+'
+'     http://www.apache.org/licenses/LICENSE-2.0
+'
+' Unless required by applicable law or agreed to in writing, software
+' distributed under the License is distributed on an "AS IS" BASIS,
+' WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+' See the License for the specific language governing permissions and
+' limitations under the License.
+Imports Chromis.GlobalFcn
 Imports SixLabors.ImageSharp
 Imports SixLabors.ImageSharp.PixelFormats
 
 Public Class MedianCut
+    Implements IColorExtractor
+    Public Sub New()
+
+    End Sub
     ''' <summary>
     ''' 中位切分算法
     ''' </summary>
     ''' <param name="image">要被处理的图像</param>
     ''' <param name="colorCount">颜色点数</param>
     ''' <returns>包含具体颜色和比值的结构体</returns>
-    Public Shared Function Extract(image As Image, colorCount As Integer) As List(Of ColorInfo)
+    Public Function Extract(image As Image, colorCount As Integer) As IReadOnlyList(Of ColorInfo) Implements IColorExtractor.Extract
         Dim pixels = GetPixelsFromImage(image)
         Dim colorCubes As New List(Of ColorCube) From {New ColorCube(pixels)}
         '切分直到得到足够的颜色块

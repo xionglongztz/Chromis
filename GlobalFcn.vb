@@ -1,4 +1,18 @@
-﻿Imports SixLabors.ImageSharp
+﻿' Chromis - Image Dominant Colors Extracter
+' Copyright 2026 xionglongztz
+'
+' Licensed under the Apache License, Version 2.0 (the "License");
+' you may not use this file except in compliance with the License.
+' You may obtain a copy of the License at
+'
+'     http://www.apache.org/licenses/LICENSE-2.0
+'
+' Unless required by applicable law or agreed to in writing, software
+' distributed under the License is distributed on an "AS IS" BASIS,
+' WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+' See the License for the specific language governing permissions and
+' limitations under the License.
+Imports SixLabors.ImageSharp
 Imports SixLabors.ImageSharp.Advanced
 Imports SixLabors.ImageSharp.PixelFormats
 Public Class GlobalFcn
@@ -45,4 +59,10 @@ Public Class GlobalFcn
         End Try
         Return pixels
     End Function
+    ''' <summary>
+    ''' 颜色提取器接口
+    ''' </summary>
+    Public Interface IColorExtractor
+        Function Extract(image As Image, colorCount As Integer) As IReadOnlyList(Of ColorInfo)
+    End Interface
 End Class

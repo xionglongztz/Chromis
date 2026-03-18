@@ -1,16 +1,33 @@
+' Chromis - Image Dominant Colors Extracter
+' Copyright 2026 xionglongztz
+'
+' Licensed under the Apache License, Version 2.0 (the "License");
+' you may not use this file except in compliance with the License.
+' You may obtain a copy of the License at
+'
+'     http://www.apache.org/licenses/LICENSE-2.0
+'
+' Unless required by applicable law or agreed to in writing, software
+' distributed under the License is distributed on an "AS IS" BASIS,
+' WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+' See the License for the specific language governing permissions and
+' limitations under the License.
 Imports Chromis.GlobalFcn
 Imports SixLabors.ImageSharp
 Imports SixLabors.ImageSharp.PixelFormats
 
 Public Class KMeans
+    Implements IColorExtractor
+    Public Sub New()
+
+    End Sub
     ''' <summary>
     ''' K-Means 聚类算法
     ''' </summary>
     ''' <param name="image">要被处理的图像</param>
     ''' <param name="clusterCount">聚类点数量</param>
-    ''' <param name="maxIterations">(可选)最大迭代数,默认为 10</param>
     ''' <returns>包含具体颜色和比值的结构体</returns>
-    Public Shared Function Extract(image As Image, clusterCount As Integer, Optional maxIterations As Integer = 10) As List(Of ColorInfo)
+    Public Function Extract(image As Image, clusterCount As Integer) As IReadOnlyList(Of ColorInfo) Implements IColorExtractor.Extract
         Dim pixels = GetPixelsFromImage(image)
         Dim clusters = New List(Of Cluster)(clusterCount)
         '初始化随机中心点
@@ -20,6 +37,7 @@ Public Class KMeans
             clusters.Add(New Cluster(randomPixel))
         Next
         Dim changed As Boolean
+        Dim maxIterations As Integer = 10
         Dim iteration = 0
         'K-Means 迭代
         Do
@@ -108,4 +126,5 @@ Public Class KMeans
         Dim deltaB As Double = CDbl(AColor.B) - CDbl(BColor.B)
         Return Math.Sqrt(deltaR * deltaR + deltaG * deltaG + deltaB * deltaB)
     End Function
+
 End Class
