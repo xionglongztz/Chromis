@@ -1,0 +1,79 @@
+Imports System.Drawing
+Imports System.Net.Mime.MediaTypeNames
+
+Public Class KMeans
+    ''' <summary>
+    ''' K-Means 聚类算法
+    ''' </summary>
+    ''' <param name="image">要被处理的图像</param>
+    ''' <param name="clusterCount">聚类点数量</param>
+    ''' <returns>包含具体颜色和百分比的结构体</returns>
+    Public Function ExtractColorsWithKMeans(image As Image, clusterCount As Integer) As List(Of ColorInfo)
+        Dim pixels = GetPixelsFromImage(image)
+        Dim clusters = New List(Of Cluster)(clusterCount)
+        '初始化随机中心点
+        Dim rnd As New Random()
+        For i = 0 To clusterCount - 1
+            Dim randomPixel = pixels(rnd.Next(pixels.Count))
+            clusters.Add(New Cluster(Color.FromArgb(randomPixel.R, randomPixel.G, randomPixel.B)))
+        Next
+        Dim changed As Boolean
+        Dim maxIterations = 10
+        Dim iteration = 0
+        'K-Means 迭代
+        Do
+            changed = False
+            iteration += 1
+            '清空聚类点
+            For Each cluster In clusters
+                cluster.Points.Clear()
+            Next
+            '分配每个点到最近的聚类
+            For Each pixel In pixels
+                Dim nearestCluster As Cluster = Nothing
+                Dim minDistance = Double.MaxValue
+                For Each cluster In clusters
+                    Dim distance = CalcEuclideanDis(pixel, cluster.Center)
+                    If distance < minDistance Then
+                        minDistance = distance
+                        nearestCluster = cluster
+                    End If
+                Next
+                nearestCluster.Points.Add(pixel)
+            Next
+            '重新计算聚类中心
+            For Each cluster In clusters
+                If cluster.Points.Count > 0 Then
+                    Dim newCenter = CalculateAverageColor(cluster.Points)
+                    If Not newCenter.Equals(cluster.Center) Then
+                        cluster.Center = newCenter
+                        changed = True
+                    End If
+                End If
+            Next
+        Loop While changed AndAlso iteration < maxIterations
+        '计算每个聚类的百分比
+        Dim totalPixels = pixels.Count
+        Dim result = New List(Of ColorInfo)()
+        For Each cluster In clusters
+            If cluster.Points.Count > 0 Then
+                result.Add(New ColorInfo With {
+                    .Color = cluster.Center,
+                    .Percentage = cluster.Points.Count / totalPixels
+                })
+            End If
+        Next
+        '按百分比降序排序
+        Return result.OrderByDescending(Function(c) c.Percentage).ToList()
+    End Function
+    ''' <summary>
+    ''' 聚类点类
+    ''' </summary>
+    Private Class Cluster
+        Public Center As Color
+        Public Points As New List(Of Color)
+        Public Sub New(center As Color)
+            Me.Center = center
+        End Sub
+    End Class
+End Class
