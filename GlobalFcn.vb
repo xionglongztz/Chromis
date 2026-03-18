@@ -23,11 +23,19 @@ Public Class GlobalFcn
         ''' <summary>
         ''' 颜色
         ''' </summary>
-        Public Color As Rgba64
+        Public R As Byte
+        Public G As Byte
+        Public B As Byte
         ''' <summary>
         ''' 该颜色对应的比率, 范围为 0 到 1
         ''' </summary>
-        Public Ratio As Double
+        Public Ratio As Single
+        Public Function ToHex() As String
+            Return $"#{R:X2}{G:X2}{B:X2}"
+        End Function
+        Public Function ToTuple() As (Byte, Byte, Byte)
+            Return (R, G, B)
+        End Function
     End Structure
     ''' <summary>
     ''' 对图像进行采样

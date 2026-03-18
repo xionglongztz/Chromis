@@ -77,7 +77,9 @@ Public Class KMeans
         For Each cluster In clusters
             If cluster.Points.Count > 0 Then
                 result.Add(New ColorInfo With {
-                    .Color = cluster.Center,
+                    .R = cluster.Center.R,
+                    .G = cluster.Center.G,
+                    .B = cluster.Center.B,
                     .Ratio = cluster.Points.Count / totalPixels
                 })
             End If

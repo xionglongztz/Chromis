@@ -44,7 +44,9 @@ Public Class MedianCut
         Dim result = New List(Of ColorInfo)()
         For Each cube In colorCubes
             result.Add(New ColorInfo With {
-                .Color = cube.AverageColor,
+                .R = cube.AverageColor.R,
+                .G = cube.AverageColor.G,
+                .B = cube.AverageColor.B,
                 .Ratio = cube.Pixels.Count / totalPixels
             })
         Next

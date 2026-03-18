@@ -45,7 +45,9 @@ Public Class Octree
         Dim result = New List(Of ColorInfo)()
         For Each node In colorNodes
             result.Add(New ColorInfo With {
-                .Color = node.Color,
+                .R = node.Color.R,
+                .G = node.Color.G,
+                .B = node.Color.B,
                 .Ratio = node.PixelCount / totalPixels
             })
         Next
