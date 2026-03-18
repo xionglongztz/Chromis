@@ -30,9 +30,16 @@ Public Class GlobalFcn
         ''' 该颜色对应的比率, 范围为 0 到 1
         ''' </summary>
         Public Ratio As Single
+        ''' <summary>
+        ''' 转换成十六进制
+        ''' </summary>
+        ''' <returns>获得十六进制格式(如#7CBDFF)</returns>
         Public Function ToHex() As String
             Return $"#{R:X2}{G:X2}{B:X2}"
         End Function
+        ''' <summary>
+        ''' 获得三元组格式
+        ''' </summary>
         Public Function ToTuple() As (Byte, Byte, Byte)
             Return (R, G, B)
         End Function
