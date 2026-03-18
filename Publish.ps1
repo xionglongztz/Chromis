@@ -1,7 +1,7 @@
 ﻿# ASCII Art
 Write-Host "   ____ _                         _     " -ForegroundColor Cyan
 Write-Host "  / ___| |__  _ __ ___  _ __ ___ (_)___ " -ForegroundColor Cyan
-Write-Host " | |   | '_ \| '__/ _ \| '_ ` _ \| / __|" -ForegroundColor Cyan
+Write-Host " | |   | '_ \| '__/ _ \| '_ `` _ \| / __|" -ForegroundColor Cyan
 Write-Host " | |___| | | | | | (_) | | | | | | \__ \" -ForegroundColor Cyan
 Write-Host "  \____|_| |_|_|  \___/|_| |_| |_|_|___/" -ForegroundColor Cyan
 Write-Host
