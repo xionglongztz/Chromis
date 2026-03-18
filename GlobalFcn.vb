@@ -2,8 +2,6 @@
 Imports SixLabors.ImageSharp.Advanced
 Imports SixLabors.ImageSharp.PixelFormats
 Public Class GlobalFcn
-
-#Region "结构体定义"
     ''' <summary>
     ''' 包含一套颜色与占比的结果结构体
     ''' </summary>
@@ -17,9 +15,6 @@ Public Class GlobalFcn
         ''' </summary>
         Public Ratio As Double
     End Structure
-#End Region
-
-#Region "图像预处理"
     ''' <summary>
     ''' 对图像进行采样
     ''' </summary>
@@ -50,41 +45,4 @@ Public Class GlobalFcn
         End Try
         Return pixels
     End Function
-#End Region
-
-#Region "颜色处理"
-    ''' <summary>
-    ''' 计算平均颜色
-    ''' </summary>
-    ''' <param name="colors">颜色列表</param>
-    ''' <returns>平均颜色</returns>
-    Public Shared Function CalculateAverageColor(colors As List(Of Rgba64)) As Rgba64
-        Dim r = 0, g = 0, b = 0
-        For Each color In colors
-            r += color.R
-            g += color.G
-            b += color.B
-        Next
-        r \= colors.Count
-        g \= colors.Count
-        b \= colors.Count
-        Return Color.FromRgb(r, g, b)
-    End Function
-#End Region
-
-#Region "数学运算"
-    ''' <summary>
-    ''' 计算两个颜色的欧几里得距离
-    ''' </summary>
-    ''' <param name="AColor">颜色A</param>
-    ''' <param name="BColor">颜色B</param>
-    ''' <returns>两个颜色的欧几里得距离</returns>
-    Public Shared Function CalcEuclideanDis(AColor As Rgba64, BColor As Rgba64) As Integer
-        Dim deltaR As Double = CDbl(AColor.R) - CDbl(BColor.R)
-        Dim deltaG As Double = CDbl(AColor.G) - CDbl(BColor.G)
-        Dim deltaB As Double = CDbl(AColor.B) - CDbl(BColor.B)
-        Return Math.Sqrt(deltaR * deltaR + deltaG * deltaG + deltaB * deltaB)
-    End Function '计算两个颜色的欧氏距离
-#End Region
-
 End Class
