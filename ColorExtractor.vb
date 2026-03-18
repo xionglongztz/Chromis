@@ -15,7 +15,7 @@
 Imports System.IO
 Imports Chromis.GlobalFcn
 Imports SixLabors.ImageSharp
-Public Class Chromis
+Public Class ColorExtractor
     ''' <summary>
     ''' 提取类型
     ''' </summary>
