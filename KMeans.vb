@@ -10,7 +10,7 @@ Public Class KMeans
     ''' <param name="clusterCount">聚类点数量</param>
     ''' <param name="maxIterations">(可选)最大迭代数,默认为 10</param>
     ''' <returns>包含具体颜色和比值的结构体</returns>
-    Public Shared Function ExtractWithKMeans(image As Image, clusterCount As Integer, Optional maxIterations As Integer = 10) As List(Of ColorInfo)
+    Public Shared Function Extract(image As Image, clusterCount As Integer, Optional maxIterations As Integer = 10) As List(Of ColorInfo)
         Dim pixels = GetPixelsFromImage(image)
         Dim clusters = New List(Of Cluster)(clusterCount)
         '初始化随机中心点

@@ -9,7 +9,7 @@ Public Class MedianCut
     ''' <param name="image">要被处理的图像</param>
     ''' <param name="colorCount">颜色点数</param>
     ''' <returns>包含具体颜色和比值的结构体</returns>
-    Public Shared Function ExtractWithMedianCut(image As Image, colorCount As Integer) As List(Of ColorInfo)
+    Public Shared Function Extract(image As Image, colorCount As Integer) As List(Of ColorInfo)
         Dim pixels = GetPixelsFromImage(image)
         Dim colorCubes As New List(Of ColorCube) From {New ColorCube(pixels)}
         '切分直到得到足够的颜色块

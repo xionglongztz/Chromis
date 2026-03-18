@@ -10,7 +10,7 @@ Public Class Octree
     ''' <param name="image">要被处理的图像</param>
     ''' <param name="colorCount">颜色点数</param>
     ''' <returns>包含具体颜色和比值的结构体</returns>
-    Public Function ExtractWithOctree(image As Image, colorCount As Integer) As List(Of ColorInfo)
+    Public Shared Function Extract(image As Image, colorCount As Integer) As List(Of ColorInfo)
         Dim pixels = GetPixelsFromImage(image)
         Dim octree = New Octree()
         '构建八叉树
