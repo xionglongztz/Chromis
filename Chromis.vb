@@ -12,7 +12,7 @@
 ' WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 ' See the License for the specific language governing permissions and
 ' limitations under the License.
-Imports Chromis.Chromis
+Imports System.IO
 Imports Chromis.GlobalFcn
 Imports SixLabors.ImageSharp
 Public Class Chromis
@@ -42,6 +42,30 @@ Public Class Chromis
     Public Shared Function Extract(image As Image, colorCount As Integer, Optional extractType As ExtractType = ExtractType.Octree) As List(Of ColorInfo)
         Dim extractor = ExtractorFactory(extractType)(colorCount)
         Return extractor.Extract(image, colorCount)
+    End Function
+    ''' <summary>
+    ''' 提取图像的主要颜色
+    ''' </summary>
+    ''' <param name="stream">要被处理的图像流</param>
+    ''' <param name="colorCount">颜色数量</param>
+    ''' <param name="extractType">(可选)提取方式,默认为<seealso cref="Octree"/></param>
+    Public Shared Function Extract(stream As Stream, colorCount As Integer, Optional extractType As ExtractType = ExtractType.Octree) As List(Of ColorInfo)
+        Dim extractor = ExtractorFactory(extractType)(colorCount)
+        Using img = Image.Load(stream)
+            Return extractor.Extract(img, colorCount)
+        End Using
+    End Function
+    ''' <summary>
+    ''' 提取图像的主要颜色
+    ''' </summary>
+    ''' <param name="filePath">要被处理的文件路径</param>
+    ''' <param name="colorCount">颜色数量</param>
+    ''' <param name="extractType">(可选)提取方式,默认为<seealso cref="Octree"/></param>
+    Public Shared Function Extract(filePath As String, colorCount As Integer, Optional extractType As ExtractType = ExtractType.Octree) As List(Of ColorInfo)
+        Dim extractor = ExtractorFactory(extractType)(colorCount)
+        Using img = Image.Load(filePath)
+            Return extractor.Extract(img, colorCount)
+        End Using
     End Function
     ''' <summary>
     ''' 注册一个自己的提取算法
