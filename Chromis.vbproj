@@ -8,7 +8,7 @@
 	<Authors>xionglongztz</Authors>
 	<Version>1.0.3</Version>
 	<Description>Extract dominant colors from images using K-Means, Median Cut, or Octree algorithms.</Description>
-	<PackageTags>image processing; color extraction; k-means; median cut; octree</PackageTags>
+	<PackageTags>image processing; color extraction; k-means; mediancut; octree</PackageTags>
     <ApplicationManifest>My Project\app.manifest</ApplicationManifest>
     <RepositoryUrl>https://github.com/xionglongztz/Chromis</RepositoryUrl>
     <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>

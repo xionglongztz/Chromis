@@ -5,7 +5,7 @@
 # Chromis 🐟
 
 Extract dominant colors from images using K-Means, Median Cut, or Octree algorithms.  
-Chromis is a lightweight, cross-platform .NET library for color extraction, designed with zero UI dependencies and clean data structures.  
+[Chromis](https://www.nuget.org/packages/Chromis) is a lightweight, cross-platform .NET library for color extraction, designed with zero UI dependencies and clean data structures.  
 
 ## ✨ Features
 
@@ -53,7 +53,7 @@ public List<Color> GetPixelsFromImage(Image image, int stepCount = 5)
 ```csharp
 using Chromis;
 
-var sampledColors = GetPixelsFromImage(pictureBoxMain.Image);
+var sampledColors = GetPixelsFromImage(PictureBox1.Image);
 var rgbColors = new List<RGBColor>();
 foreach (var color in sampledColors)
 {
@@ -90,7 +90,7 @@ End Function
 Imports Chromis
 
 Dim pixels As New List(Of ColorExtractor.RGBColor)
-For Each sampledColor In GetPixelsFromImage(PictureBoxMain.Image)
+For Each sampledColor In GetPixelsFromImage(PictureBox1.Image)
     pixels.Add(ColorExtractor.RGBColor.FromRGB(sampledColor.R, sampledColor.G, sampledColor.B))
 Next
 Dim colorInfos = ColorExtractor.Extract(pixels, 10)
