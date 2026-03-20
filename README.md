@@ -27,6 +27,7 @@ dotnet add package Chromis
 
 ### C#
 ```csharp
+//.NET Framework
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -34,7 +35,7 @@ using System.Drawing;
 public List<Color> GetPixelsFromImage(Image image, int stepCount = 5)
 {
     if (stepCount < 1)
-        throw new ArgumentOutOfRangeException(nameof(stepCount), "stepCount must greater than 1");
+        throw new ArgumentOutOfRangeException(nameof(stepCount), "stepCount must be positive");
     var pixels = new List<Color>();
     using (var bmp = new Bitmap(image))
     {
@@ -45,6 +46,44 @@ public List<Color> GetPixelsFromImage(Image image, int stepCount = 5)
                 pixels.Add(bmp.GetPixel(x, y));
             }
         }
+    }
+    return pixels;
+}
+//.NET
+using System;
+using System.Collections.Generic;
+using SixLabors.ImageSharp;
+using SixLabors.ImageSharp.Advanced;
+using SixLabors.ImageSharp.PixelFormats;
+
+public List<Rgba64> GetPixelsFromImage(Image image, int stepCount = 5)
+{
+    if (stepCount <= 0)
+        throw new ArgumentException("stepCount must be positive");
+    var pixels = new List<Rgba64>();
+    var rgbaImage = image as Image<Rgba64>;
+    bool needDispose = false;
+    if (rgbaImage == null)
+    {
+        rgbaImage = image.CloneAs<Rgba64>();
+        needDispose = true;
+    }
+    try
+    {
+        var frame = rgbaImage.Frames[0];
+        for (int y = 0; y < frame.Height; y += stepCount)
+        {
+            var row = frame.GetPixelMemoryGroup(y);
+            for (int x = 0; x < frame.Width; x += stepCount)
+            {
+                pixels.Add(row.Span[x]);
+            }
+        }
+    }
+    finally
+    {
+        if (needDispose)
+            rgbaImage?.Dispose();
     }
     return pixels;
 }
@@ -68,12 +107,13 @@ foreach (var ci in colorInfos)
 
 ### VB.NET
 ```vbnet
+'.NET Framework
 Imports System;
 Imports System.Collections.Generic;
 Imports System.Drawing;
 
 Public Function GetPixelsFromImage(image As Image, Optional stepCount As Integer = 5) As List(Of Color)
-    If stepCount < 1 Then Throw New ArgumentOutOfRangeException(NameOf(stepCount), "stepCount must greater than 1")
+    If stepCount < 1 Then Throw New ArgumentOutOfRangeException(NameOf(stepCount), "stepCount must be positive")
     Dim pixels As New List(Of Color)()
     Using bmp = New Bitmap(image)
         For x = 0 To bmp.Width - 1 Step stepCount
@@ -82,6 +122,34 @@ Public Function GetPixelsFromImage(image As Image, Optional stepCount As Integer
             Next
         Next
     End Using
+    Return pixels
+End Function
+
+'.NET
+Imports SixLabors.ImageSharp
+Imports SixLabors.ImageSharp.Advanced
+Imports SixLabors.ImageSharp.PixelFormats
+
+Public Function GetPixelsFromImage(image As Image, Optional stepCount As Integer = 5) As List(Of Rgba64)
+    If stepCount <= 0 Then Throw New ArgumentException("stepCount must be positive")
+    Dim pixels As New List(Of Rgba64)()
+    Dim rgbaImage As Image(Of Rgba64) = TryCast(image, Image(Of Rgba64))
+    Dim needDispose As Boolean = False
+    If rgbaImage Is Nothing Then
+        rgbaImage = image.CloneAs(Of Rgba64)()
+        needDispose = True
+    End If
+    Try
+        Dim frame = rgbaImage.Frames(0)
+        For y As Integer = 0 To frame.Height - 1 Step stepCount
+            Dim row = frame.GetPixelMemoryGroup(y)
+            For x As Integer = 0 To frame.Width - 1 Step stepCount
+                pixels.Add(row.Span(x))
+            Next
+        Next
+    Finally
+        If needDispose Then rgbaImage?.Dispose()
+    End Try
     Return pixels
 End Function
 ```
@@ -98,7 +166,7 @@ For Each ci In colorInfos
     Console.WriteLine($"{ci.Color.R}, {ci.Color.G}, {ci.Color.B} - {ci.Ratio:P}")
 Next
 ```
- - `R`, `G`, `B`: RGB color values  
+ - `R`, `G`, `B`: RGB color values (0 ~ 255)  
  - `Ratio`: Percentage of this color in the image (0 ~ 1)
 
 ## 📊 Algorithms
