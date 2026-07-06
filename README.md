@@ -49,6 +49,37 @@ public List<Color> GetPixelsFromImage(Image image, int stepCount = 5)
     }
     return pixels;
 }
+//Recommended
+public List<Color> GetPixelsFromImageFast(Image image, int stepCount = 5)
+{
+    if (stepCount < 1) throw new ArgumentOutOfRangeException(nameof(stepCount));
+    var pixels = new List<Color>();
+    using (var bmp = new Bitmap(image))
+    {
+        var rect = new Rectangle(0, 0, bmp.Width, bmp.Height);
+        var data = bmp.LockBits(rect, ImageLockMode.ReadOnly, PixelFormat.Format24bppRgb);
+        int bytesPerPixel = 3;
+        int stride = data.Stride;
+        byte[] rgbValues = new byte[stride * bmp.Height];
+        Marshal.Copy(data.Scan0, rgbValues, 0, rgbValues.Length);
+        bmp.UnlockBits(data);
+
+        for (int y = 0; y < bmp.Height; y += stepCount)
+        {
+            int rowOffset = y * stride;
+            for (int x = 0; x < bmp.Width; x += stepCount)
+            {
+                int pos = rowOffset + x * bytesPerPixel;
+                // 注意 LockBits 顺序是 BGR
+                byte b = rgbValues[pos];
+                byte g = rgbValues[pos + 1];
+                byte r = rgbValues[pos + 2];
+                pixels.Add(Color.FromArgb(r, g, b));
+            }
+        }
+    }
+    return pixels;
+}
 //.NET
 using System;
 using System.Collections.Generic;
@@ -124,7 +155,40 @@ Public Function GetPixelsFromImage(image As Image, Optional stepCount As Integer
     End Using
     Return pixels
 End Function
+'Recommended
+Public Function GetPixelsFromImageFast(image As Image, Optional stepCount As Integer = 5) As List(Of Color)
+    If stepCount < 1 Then
+        Throw New ArgumentOutOfRangeException(NameOf(stepCount))
+    End If
 
+    Dim pixels As New List(Of Color)()
+
+    Using bmp As New Bitmap(image)
+        Dim rect As New Rectangle(0, 0, bmp.Width, bmp.Height)
+        Dim data As BitmapData = bmp.LockBits(rect, ImageLockMode.ReadOnly, PixelFormat.Format24bppRgb)
+
+        Dim bytesPerPixel As Integer = 3
+        Dim stride As Integer = data.Stride
+        Dim rgbValues(bytesPerPixel * bmp.Width * bmp.Height - 1) As Byte ' 更精确的大小
+        ' 或者使用 stride * bmp.Height
+        Marshal.Copy(data.Scan0, rgbValues, 0, rgbValues.Length)
+        bmp.UnlockBits(data)
+
+        For y As Integer = 0 To bmp.Height - 1 Step stepCount
+            Dim rowOffset As Integer = y * stride
+            For x As Integer = 0 To bmp.Width - 1 Step stepCount
+                Dim pos As Integer = rowOffset + x * bytesPerPixel
+                ' LockBits 顺序为 BGR
+                Dim b As Byte = rgbValues(pos)
+                Dim g As Byte = rgbValues(pos + 1)
+                Dim r As Byte = rgbValues(pos + 2)
+                pixels.Add(Color.FromArgb(r, g, b))
+            Next
+        Next
+    End Using
+
+    Return pixels
+End Function
 '.NET
 Imports SixLabors.ImageSharp
 Imports SixLabors.ImageSharp.Advanced
